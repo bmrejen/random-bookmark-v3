@@ -1,11 +1,19 @@
 {
   "compilerOptions": {
-    "target": "ES6",
-    "module": "ESNext",
-    "strict": true,
-    "jsx": "react",
-    "esModuleInterop": true,
-    "moduleResolution": "node"
+    "module": "ESNext", // Use ES modules
+    "moduleResolution": "Node", // Resolve modules using Node.js algorithm
+    "target": "ESNext", // Use modern JavaScript
+    "esModuleInterop": true, // Allow default imports from CommonJS modules
+    "strict": true, // Enable strict type-checking options
+    "sourceMap": true, // Enable source maps for debugging
+    "outDir": "./dist", // Output files in the dist folder
+    "allowJs": true, // Allow JS files (if you're mixing JS with TS)
+    "skipLibCheck": true // Skip library checks for faster build (optional)
   },
-  "include": ["src/**/*"]
+  "include": [
+    "**/*.ts" // Include all TS files under src
+  ],
+  "exclude": [
+    "node_modules" // Exclude node_modules folder
+  ]
 }

@@ -5,18 +5,10 @@ import { Tree } from "antd";
 import "antd/es/tree/style";
 
 import { FileOutlined, FolderOutlined } from "@ant-design/icons";
-// import "antd/es/icon/style/css";
-import "antd/dist/antd.js"; // Import the main CSS for all components
+import "antd/dist/antd.js";
 import { Spin, Input, Select } from "antd";
-
-// import "antd/es/spin/style/css";
-// import Spin from "antd/es/spin";
-
-// import "antd/es/input/style/css";
-// import Input from "antd/es/input";
-
-// import "antd/es/select/style/css";
-// import Select from "antd/es/select";
+import cp from "chrome-promise";
+import "./options.css";
 
 const truncate = (str: string, options = { length: 60 }) => {
   if (str.length <= options.length) {
@@ -25,9 +17,12 @@ const truncate = (str: string, options = { length: 60 }) => {
   return str.slice(0, options.length) + "...";
 };
 
-import cp from "chrome-promise";
-
-import { MODES } from "./blacklist";
+function faviconURL(u) {
+  const url = new URL(chrome.runtime.getURL("/_favicon/"));
+  url.searchParams.set("pageUrl", u);
+  url.searchParams.set("size", "32");
+  return url.toString();
+}
 
 function renderTree(tree: chrome.bookmarks.BookmarkTreeNode[]): React.ReactNode[] {
   return tree
@@ -49,11 +44,11 @@ function renderTree(tree: chrome.bookmarks.BookmarkTreeNode[]): React.ReactNode[
         );
       }
 
-      let icon = <FileOutlined />;
-
-      if (node.url) {
-        icon = <img src={`chrome://favicon/size/16@1x/${node.url}`} alt="Favicon" />;
-      }
+      const icon = node.url ? (
+        <img src={faviconURL(node.url)} alt="Favicon" style={{ width: 16, height: 16 }} />
+      ) : (
+        <FileOutlined />
+      );
 
       return (
         <Tree.TreeNode
@@ -61,6 +56,7 @@ function renderTree(tree: chrome.bookmarks.BookmarkTreeNode[]): React.ReactNode[
           title={<a href={node.url}>{truncate(node.title, { length: 60 })}</a>}
           key={node.id}
           icon={icon}
+          style={{ display: "flex" }}
         />
       );
     });
@@ -68,19 +64,12 @@ function renderTree(tree: chrome.bookmarks.BookmarkTreeNode[]): React.ReactNode[
 const Application = () => {
   const [loading, setLoading] = useState(true);
   const [selected, setSelected] = useState([]);
-  const [blacklist, setBlacklist] = useState("");
-  const [blacklistMode, setBlacklistMode] = useState(MODES.DISABLED);
   const [tree, setTree] = useState<chrome.bookmarks.BookmarkTreeNode[]>([]);
 
   useEffect(() => {
     setLoading(true);
-    Promise.all([
-      cp.bookmarks.getTree(),
-      cp.storage.local.get({ bookmarks: [], blacklist: "", blacklistMode: MODES.DISABLED })
-    ])
-      .then(([tree, { bookmarks, blacklist, blacklistMode }]) => {
-        setBlacklist(blacklist);
-        setBlacklistMode(blacklistMode);
+    Promise.all([cp.bookmarks.getTree(), cp.storage.local.get({ bookmarks: [] })])
+      .then(([tree, { bookmarks }]) => {
         setSelected(bookmarks);
         setTree(tree);
       })
@@ -92,20 +81,6 @@ const Application = () => {
         setLoading(false);
       });
   }, []);
-
-  async function saveBlacklist(
-    event: React.FocusEvent<HTMLTextAreaElement> | React.KeyboardEvent<HTMLTextAreaElement>
-  ) {
-    if (!(event.target instanceof HTMLTextAreaElement)) return;
-    const blacklist = String(event.target.value);
-    try {
-      await cp.storage.local.set({
-        blacklist
-      });
-    } catch (error) {
-      console.error(error);
-    }
-  }
 
   return (
     <div style={{ maxWidth: 800, margin: "0 auto", padding: "1em" }}>
@@ -145,37 +120,6 @@ const Application = () => {
           >
             {renderTree(tree)}
           </Tree>
-
-          <h4 style={{ marginTop: "1em" }}>
-            Blacklist
-            <Select
-              value={blacklistMode}
-              style={{ width: 180, marginLeft: "1em" }}
-              onChange={async (value) => {
-                console.log("On change", value);
-                try {
-                  setBlacklistMode(value);
-                  await cp.storage.local.set({
-                    blacklistMode: value
-                  });
-                } catch (error) {
-                  console.error(error);
-                }
-              }}
-            >
-              <Select.Option value={MODES.DISABLED}>Disabled</Select.Option>
-              <Select.Option value={MODES.ALL}>Block all</Select.Option>
-              <Select.Option value={MODES.ADDRESS_BAR}>Block address bar</Select.Option>
-            </Select>
-          </h4>
-          <Input.TextArea
-            placeholder={`Each line will be compiled as regular expression, eg:\nreddit\\.com\n`}
-            disabled={blacklistMode === MODES.DISABLED}
-            rows={6}
-            defaultValue={blacklist}
-            onBlur={saveBlacklist}
-            onPressEnter={saveBlacklist}
-          />
         </>
       )}
     </div>
