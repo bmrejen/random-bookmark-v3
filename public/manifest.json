@@ -1,0 +1,30 @@
+{
+  "action": {
+    "default_icon": "static/icon16.png",
+    "default_popup": "static/options.html"
+  },
+  "description": "A Chrome Extension that loads a random bookmark at each new tab",
+  "background": {
+    "service_worker": "dist/background.js"
+  },
+  "manifest_version": 3,
+  "name": "Hello Extensions",
+  "options_ui": {
+    "open_in_tab": true,
+    "page": "src/options.html"
+  },
+  "permission": [
+    "bookmarks"
+  ],
+  "version": "1.0",
+  "content_scripts": [
+    {
+      "matches": [
+        "<all_urls>"
+      ],
+      "js": [
+        "dist/content.js"
+      ]
+    }
+  ]
+}
