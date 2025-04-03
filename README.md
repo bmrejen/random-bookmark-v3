@@ -18,12 +18,15 @@ Just install this app from the [Chrome Store](https://chromewebstore.google.com/
 ### Step 1: Download the Extension
 
 - Clone this repository or download the extension files to your local machine.
+- Run `npm install` and then `npm run build`
+
+You should now have a `dist` folder that contains the unpacked extension.
 
 ### Step 2: Load the Extension in Chrome
 
 1. Open Chrome and go to `chrome://extensions/`.
 2. Enable **Developer mode** in the top right corner.
-3. Click on **Load unpacked** and select the root folder of your extension.
+3. Click on **Load unpacked** and select the `dist` folder that you just created.
 
 Once installed, you’re ready to go! Open a new tab, and a random bookmark will appear.
 
