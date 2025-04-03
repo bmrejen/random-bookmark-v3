@@ -1,0 +1,8 @@
+.ant-tree-node-content-wrapper-normal {
+  display: flex !important;
+}
+
+.ant-tree-icon__customize:has(img) {
+  display: grid !important;
+  place-items: center;
+}
