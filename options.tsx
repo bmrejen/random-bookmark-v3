@@ -65,11 +65,13 @@ const Application = () => {
   const [loading, setLoading] = useState(true);
   const [selected, setSelected] = useState([]);
   const [tree, setTree] = useState<chrome.bookmarks.BookmarkTreeNode[]>([]);
+  const [isExpanded, setIsExpanded] = useState(false);
 
   useEffect(() => {
     setLoading(true);
     Promise.all([cp.bookmarks.getTree(), cp.storage.local.get({ bookmarks: [] })])
       .then(([tree, { bookmarks }]) => {
+        console.log("OPTIONS Bookmarks selected", bookmarks);
         setSelected(bookmarks);
         setTree(tree);
       })
@@ -81,6 +83,17 @@ const Application = () => {
         setLoading(false);
       });
   }, []);
+
+  const onCheck = async (selected) => {
+    console.log("selected:", selected);
+    try {
+      await cp.storage.local.set({
+        bookmarks: selected
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   return (
     <div style={{ maxWidth: 800, margin: "0 auto", padding: "1em" }}>
@@ -107,19 +120,15 @@ const Application = () => {
             checkable
             selectable={false}
             defaultCheckedKeys={selected}
-            onCheck={async (selected) => {
-              try {
-                await cp.storage.local.set({
-                  bookmarks: selected
-                });
-              } catch (error) {
-                console.error(error);
-              }
-            }}
+            onCheck={onCheck}
             showIcon
           >
             {renderTree(tree)}
           </Tree>
+          <p>
+            If this does not work for your browser, feel free to{" "}
+            <a href="mailto:benoit.mrejen@gmail.com">shoot me an email</a>
+          </p>
         </>
       )}
     </div>

@@ -9,9 +9,15 @@ chrome.tabs.onCreated.addListener(async (tab) => {
     // Make sure the updated tab is the one we just created
     if (updatedTabId !== tab.id) return; // Ignore other tabs
     if (changeInfo.status !== "complete") return; // Ignore if not fully loaded
-    console.log("Tab fully loaded:", updatedTab);
 
-    if (updatedTab.url && updatedTab.url.includes("chrome://new")) {
+    if (
+      // chrome and brave
+      updatedTab.url === "chrome://newtab/" ||
+      // vivaldi
+      updatedTab.url?.includes("chrome://vivaldi-webui/startpage?") ||
+      // opera
+      updatedTab.url?.includes("chrome://startpageshared/")
+    ) {
       const bookmark = bookmarks.pick();
       if (!bookmark) return;
       cp.tabs.update(updatedTab.id!, { url: bookmark.url });
@@ -35,21 +41,29 @@ chrome.storage.onChanged.addListener(async (changes) => {
   }
 });
 
-bookmarks.load();
-chrome.runtime.onMessage.addListener(async (request, sender, reply) => {
-  if (request.type === "loadBookmark") {
-    reply();
-    const bookmark = bookmarks.pick();
-    if (!sender?.tab?.id) {
-      return;
-    }
-    if (bookmark) {
-      await cp.tabs.update(sender.tab.id, {
-        url: bookmark.url
-      });
-    } else {
-      // In case we don't have a bookmark to use, we redirect to default newtab page
-      await cp.tabs.update(sender.tab.id, { url: "chrome-search://local-ntp/local-ntp.html" });
+chrome.runtime.onInstalled.addListener(async (details) => {
+  if (details.reason !== "install") return;
+
+  const tree = await chrome.bookmarks.getTree();
+  const allBookmarkIds: string[] = [];
+
+  function collectIds(nodes: chrome.bookmarks.BookmarkTreeNode[]) {
+    for (const node of nodes) {
+      if (node.url) {
+        allBookmarkIds.push(node.id);
+      }
+      if (node.children) {
+        collectIds(node.children);
+      }
     }
   }
+
+  collectIds(tree);
+
+  await chrome.storage.local.set({
+    bookmarks: allBookmarkIds,
+    visited: []
+  });
+
+  console.log(`Random Bookmark initialized with ${allBookmarkIds.length} selected bookmarks`);
 });

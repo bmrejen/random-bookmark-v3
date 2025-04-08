@@ -22,7 +22,6 @@ export default defineConfig({
   build: {
     rollupOptions: {
       input: {
-        main: "index.html",
         options: "options.html",
         background: "background.ts",
         bookmarks: "bookmarks.ts"

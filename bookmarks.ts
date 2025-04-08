@@ -9,7 +9,14 @@ const state: State = {
   bookmarks: []
 };
 
-function traverse(tree, fn, parent = null) {
+function traverse(
+  tree: chrome.bookmarks.BookmarkTreeNode[],
+  fn: (
+    node: chrome.bookmarks.BookmarkTreeNode,
+    parent: chrome.bookmarks.BookmarkTreeNode | null
+  ) => void,
+  parent: chrome.bookmarks.BookmarkTreeNode | null = null
+) {
   for (const node of tree) {
     fn(node, parent);
     if (Array.isArray(node.children)) {
@@ -38,15 +45,9 @@ export async function load() {
 
   const items: Item[] = [];
   traverse(tree, (node, parent) => {
-    if (!node.url) {
-      return;
-    }
+    if (!node.url) return;
+    if (!selected.has(node.id) && !selected.has(parent?.id)) return;
 
-    if (!selected.has(node.id) && !selected.has(parent && parent.id)) {
-      return;
-    }
-
-    // If parent selected, but current node not
     selected.add(node.id);
 
     items.push({
@@ -59,8 +60,6 @@ export async function load() {
 
   state.bookmarks = items;
   state.loaded = true;
-
-  return state.bookmarks;
 }
 
 export function pick() {

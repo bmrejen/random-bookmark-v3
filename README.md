@@ -1,39 +1,58 @@
-# Random Bookmark Chrome Extension
+# Random Bookmark – Chrome Extension
 
-**Random Bookmark** is a Chrome extension designed to help you rediscover your bookmarked websites. It opens a random bookmark every time you open a new tab, turning your browser into a more productive tool. No setup or configuration required—just install it and start exploring your bookmarks.
+**Random Bookmark** opens one of your saved bookmarks every time you open a new tab. It’s a simple way to rediscover forgotten links and make better use of your bookmark collection. No setup required.
 
-## Features
+## 🔧 Features
 
-- **Random Bookmark Opening:** Every time you open a new tab, **Random Bookmark** opens a random website from your bookmarks.
-- **No Setup Required:** Simply install the extension, and it will start working. No configuration needed.
-- **Smart Bookmark System:** The extension ensures that all your bookmarks are visited before any are repeated, so you always get a fresh experience.
-- **Bookmark Management:** If there are specific bookmarks you don’t want to open, you can simply unselect them in the options page. This allows you to keep your bookmark but prevent it from being randomly selected.
+- **Random bookmark on new tab**  
+  Every time you open a new tab, you get a random bookmark instead of a blank page.
 
-## Installation
+- **No configuration needed**  
+  Install it — that’s it. It starts working immediately.
 
-### Step 1: Download the Extension
+- **Non-repeating behavior**  
+  All your bookmarks are cycled through before any are shown again.
 
-- Clone this repository or download the extension files to your local machine.
+- **Opt-out bookmarks**  
+  Don’t want certain bookmarks to appear? Uncheck them from the options page.
 
-### Step 2: Load the Extension in Chrome
+## 📦 Installation
 
-1. Open Chrome and go to `chrome://extensions/`.
-2. Enable **Developer mode** in the top right corner.
-3. Click on **Load unpacked** and select the root folder of your extension.
+### ✅ From Chrome Web Store
 
-Once installed, you’re ready to go! Open a new tab, and a random bookmark will appear.
+Install from the [Chrome Web Store](https://chromewebstore.google.com/detail/random-bookmark/fkmbndneokgnjgfakofffnljleeggpeg).
 
-## Usage
+---
 
-- **New Tab Behavior:** Every time you open a new tab, the extension will automatically open a random bookmark from your collection.
-- **Bookmark Management:** If you prefer not to open certain bookmarks, simply unselect them in the options page. This way, you can keep the bookmark but ensure it won’t be randomly selected.
+### ⚙️ Manual Installation (for devs)
 
-The extension ensures that you’ll never see the same bookmark twice until all bookmarks have been opened, providing a truly random experience.
+1. Clone this repo, `npm install && 
+npm run build`
 
-## Contributing
+1. Go to `chrome://extensions/`, enable **Developer Mode**, click **Load unpacked** and select the `dist` folder that you created in step 1
 
-If you'd like to contribute to **Random Bookmark**, feel free to fork the repository and submit a pull request. Please follow coding conventions and add tests for new features.
+## 🌍 Browser Compatibility
 
-## License
+✅ Chrome
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+✅ Brave
+
+✅ Opera
+
+✅ Vivaldi
+
+If you're using another Chromium-based browser and it doesn't work, [email me](benoit.mrejen@gmail.com).
+
+## 🤝 Contributing
+
+Pull requests are welcome — especially cleanup, refactors, or bugfixes. This was built fast, so there's room for improvement.
+
+- Keep it simple
+
+- Follow the existing style
+
+- Add tests if you add logic (optional)
+
+## 📄 License
+
+MIT

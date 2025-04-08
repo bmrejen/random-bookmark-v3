@@ -8,7 +8,7 @@
     "type": "module"
   },
   "manifest_version": 3,
-  "name": "Random Tab V3",
+  "name": "Random Bookmark V3",
   "options_ui": {
     "open_in_tab": true,
     "page": "options.html"
@@ -19,7 +19,7 @@
     "bookmarks",
     "favicon"
   ],
-  "version": "1.0",
+  "version": "3.0",
   "web_accessible_resources": [
     {
       "resources": [
