@@ -71,7 +71,6 @@ const Application = () => {
     setLoading(true);
     Promise.all([cp.bookmarks.getTree(), cp.storage.local.get({ bookmarks: [] })])
       .then(([tree, { bookmarks }]) => {
-        console.log("OPTIONS Bookmarks selected", bookmarks);
         setSelected(bookmarks);
         setTree(tree);
       })
